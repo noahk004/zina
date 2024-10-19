@@ -1,6 +1,14 @@
 # server.py
 from flask import Flask, render_template
 import socketio
+from PIL import Image
+from pydub import AudioSegment
+
+js_object = {
+    "image": Image.open('backend\img_aud\audio.mp3'),
+    "audio": AudioSegment.from_file('backend\img_aud\audio.mp3'),
+    "text": "text"
+}
 
 # Create a Socket.IO server
 sio = socketio.Server(cors_allowed_origins="*")  # Allow all origins; adjust in production
@@ -34,6 +42,11 @@ def send_message(sid, data):
     print(f'Received message from {sid}: {data}')
     # Broadcast the received message to all clients
     sio.emit('message', f'User {sid} says: {data}', skip_sid=None)
+
+# Emit an array to the client
+@socketio.on('request_object')
+def handle_request_object():
+    sio.emit('js_object', js_object)
 
 if __name__ == '__main__':
     # Run the app with eventlet's WSGI server
