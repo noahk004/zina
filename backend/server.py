@@ -1,23 +1,32 @@
 # server.py
 from flask import Flask, render_template
-import socketio
+from flask_socketio import SocketIO
 from PIL import Image
-from pydub import AudioSegment
+#from pydub import AudioSegment
+#from pydub.utils import which
+
+# Set the path to FFmpeg and ffprobe manually
+#AudioSegment.converter = which("ffmpeg")
+#AudioSegment.ffprobe = which("ffprobe")
+
+#print("FFmpeg path:", which("ffmpeg"))
+#print("FFprobe path:", which("ffprobe"))
 
 js_object = {
-    "image": Image.open('backend\img_aud\audio.mp3'),
-    "audio": AudioSegment.from_file('backend\img_aud\audio.mp3'),
+    "image": Image.open('img_aud\\image.png'),
+    "audio": 'img_aug\\audio.mp3',
     "text": "text"
 }
 
 # Create a Socket.IO server
-sio = socketio.Server(cors_allowed_origins="*")  # Allow all origins; adjust in production
+#sio = socketio.Server(cors_allowed_origins="*")  # Allow all origins; adjust in production
 
 # Create a Flask app
 app = Flask(__name__)
+sio = SocketIO(app, cors_allowed_origins="*")
 
 # Wrap the Flask app with Socket.IO's middleware
-app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
+#app.wsgi_app = SocketIO.WSGIApp(sio, app.wsgi_app)
 
 # Optional: Define a route for the home page
 @app.route('/')
@@ -44,16 +53,17 @@ def send_message(sid, data):
     sio.emit('message', f'User {sid} says: {data}', skip_sid=None)
 
 # Emit an array to the client
-@socketio.on('request_object')
+@sio.on('request_object')
 def handle_request_object():
     sio.emit('js_object', js_object)
 
 if __name__ == '__main__':
     # Run the app with eventlet's WSGI server
-    import eventlet
-    import eventlet.wsgi
-    from werkzeug.middleware.dispatcher import DispatcherMiddleware
+    #import eventlet
+    #import eventlet.wsgi
+    #from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
     # Wrap Flask app for eventlet
-    app = DispatcherMiddleware(app)
-    eventlet.wsgi.server(eventlet.listen(('', 5050)), app)
+    #app = DispatcherMiddleware(app)
+    #eventlet.wsgi.server(eventlet.listen(('', 5050)), app)
+    sio.run(app, host='0.0.0.0', port=5050)
