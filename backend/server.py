@@ -2,21 +2,20 @@
 from flask import Flask, render_template
 import socketio
 from PIL import Image
-from pydub import AudioSegment
 
-image = Image.open('backend\\img_aud\\audio.mp3')
+image = Image.open('img_aud\\image.png')
 
-audio = AudioSegment.from_file('backend\\img_aud\\audio.mp3')
+audio = 'img_aud\\dumbtest.wav'
 
 text = "text"
 
 data_array = [image, audio, text]
 
-# Create a Socket.IO server
-sio = socketio.Server(cors_allowed_origins="*")  # Allow all origins; adjust in production
-
 # Create a Flask app
 app = Flask(__name__)
+
+# Create a Socket.IO server
+sio = socketio.Server(cors_allowed_origins="*")  # Allow all origins; adjust in production
 
 # Wrap the Flask app with Socket.IO's middleware
 app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
@@ -46,8 +45,8 @@ def send_message(sid, data):
     sio.emit('message', f'User {sid} says: {data}', skip_sid=None)
 
 # Emit an array to the client
-@socketio.on('request_array')
-def handle_request_array():
+@sio.event
+def request_array(data):
     sio.emit('response_array', data_array)
 
 if __name__ == '__main__':
