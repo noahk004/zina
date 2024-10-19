@@ -1,3 +1,5 @@
 flask
 python-socketio
 eventlet
+pillow
+pydub
