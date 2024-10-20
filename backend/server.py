@@ -223,13 +223,14 @@ def send_message(sid, data):
         audioResponse = deepgram.speak.v("1").save("output.wav", SPEAK_OPTIONS, audioOptions)
         print(audioResponse.to_json(indent=4))
 
+        with open(audioResponse.filename, "rb") as audio_file:
+            audio_data = audio_file.read()
+            # Emit the audio data as binary to the frontend
+            print("YAY")
+
     except Exception as e:
         print(f"Exception: {e}")
     # END DEEPGRAM AUDIO ADDING
-
-    with open(audioResponse, 'rb') as f:
-        audio_data = f.read()
-        print(audio_data)
 
     print(f'Received message from {sid}: {data}')
     images = []
@@ -262,7 +263,7 @@ def send_message(sid, data):
     sio.emit('message', {
         'images': images,
         'text_contents': text_contents,
-        'audioData': audio_data,
+        'audio_data': audio_data,
     })
 
 if __name__ == '__main__':

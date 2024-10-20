@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { createClient } from '@deepgram/sdk';
 
 import Page from "./temppage";
 
@@ -14,21 +13,6 @@ function App() {
   const [index, setIndex] = useState(0);
   const [images, setImages] = useState([]);
   const [currAudioUrl, setCurrAudioUrl] = useState('');
-  //const API_KEY = "5eea543264e20ce240e0496ee8ed7abebab66d1d";
-  //const deepgram = createClient(API_KEY);
-
-  // const generateAudio = async (inputText) => {
-  //   const response = await deepgram.speak.request({
-  //     inputText,
-  //     model: 'aura-asteria-en', // Choose your desired voice
-  //     encoding: 'linear16',
-  //     container: 'wav'
-  //   });
-
-  //   const blob = await response.getBlob();
-  //   const url = URL.createObjectURL(blob);
-  //   setCurrAudioUrl(url);
-  // };
   
   useEffect(() => {
     // Listen for incoming messages from the server
