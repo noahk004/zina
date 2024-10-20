@@ -19,7 +19,7 @@ from langchain.embeddings.base import Embeddings
 from chromadb.utils.embedding_functions import OpenCLIPEmbeddingFunction
 from langchain.docstore.document import Document
 from langchain.memory import ConversationBufferMemory
-from langchain.memory import ChatMessageHistory
+from langchain_community.chat_message_histories import ChatMessageHistory #from langchain.memory import ChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.prompts import PromptTemplate
 from langchain_mistralai import ChatMistralAI
