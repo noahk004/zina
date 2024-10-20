@@ -4,15 +4,8 @@ import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { motion } from "framer-motion";
 
-import VoiceToTextComponent from "./VoiceToTextComponent";
-
-import { Mic, MicOff } from "lucide-react";
-import { useVoiceToText } from "react-speakup";
-
-import { motion } from "framer-motion";
 
 import { useParams } from "next/navigation";
-
 
 const socket = io("http://localhost:5050");
 
@@ -77,19 +70,6 @@ function Classroom() {
   // const uid = generateUid()
   // const token = generateToken(uid)
 
-  // ------ AGORA -------
-  const [calling, setCalling] = useState(true);
-  useJoin(
-    { appid: appId, channel: channelName, token: token ? token : null },
-    calling
-  );
-  const remoteUsers = useRemoteUsers();
-  // ------ AGORA -------
-
-  // ------ COMPONENTS -------
-  const [camerasVisible, setCamerasVisible] = useState(true);
-  // ------ COMPONENTS -------
-
   useEffect(() => {
     // Listen for incoming messages from the server
     socket.on("message", (msg) => {
@@ -118,14 +98,13 @@ function Classroom() {
 
     if (images && images.length > 0 && messages && messages.length > 0) {
       const displayContent = (currentIndex) => {
-
         if (isCancelled) return; // Stop if component is unmounted
 
         setIndex(currentIndex);
 
         if (currentIndex < images.length - 1) {
           setTimeout(() => {
-            displayImages(currentIndex + 1);
+            displayContent(currentIndex + 1);
           }, 3000);
 
         }
@@ -151,7 +130,9 @@ function Classroom() {
   if (!loading) {
     return (
       <div className="w-screen flex justify-between h-full">
-        <div className="p-5">soe text</div>
+        <div className="p-5"></div>
+
+        <VoiceToText />
 
         <div className="h-full flex flex-col justify-center items-center">
           <div className="">
@@ -213,3 +194,4 @@ function Classroom() {
       </div>
     );
   }
+}
