@@ -3,6 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
+import VoiceToTextComponent from "./VoiceToTextComponent";
+
+import { Mic, MicOff } from "lucide-react";
+import { useVoiceToText } from "react-speakup";
+
 import { motion } from "framer-motion";
 
 import { generateToken } from "@/components/agora/tokenGenerator";
@@ -44,6 +49,24 @@ function Classroom() {
   const [messages, setMessages] = useState([]);
 
   const dummyText = "this needs to be spoken";
+
+  const VoiceToText = () => {
+    const { startListening, stopListening, transcript } = useVoiceToText({
+      continuous: true,
+      lang: "en-US",
+    });
+  
+    return (
+      <div className="flex flex-col gap-6">
+        {" "}
+        <div className="flex gap-6">
+          <Mic onClick={startListening} role="button" />
+          <MicOff onClick={stopListening} role="button" />
+        </div>
+        <h2>{transcript}</h2>
+      </div>
+    );
+  };
 
   // const uid = generateUid()
   // const token = generateToken(uid)
@@ -114,6 +137,8 @@ function Classroom() {
       <div className="p-5">
         <button onClick={sendMessage}>Start</button>
       </div>
+
+      <VoiceToTextComponent />
 
       <div className="h-full flex flex-col justify-center items-center">
         <div className="">
