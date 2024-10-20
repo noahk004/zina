@@ -3,13 +3,16 @@ from flask import Flask, render_template
 import socketio
 from PIL import Image
 
-image = Image.open('img_aud\\image.png')
+js_object = {
+    "image": Image.open('img_aud\\image.png'),
+    "audio": 'img_aug\\audio.mp3',
+    "text": "text"
+}
 
-audio = 'img_aud\\dumbtest.wav'
+courses = []
 
-text = "text"
-
-data_array = [image, audio, text]
+# Create a Socket.IO server
+#sio = socketio.Server(cors_allowed_origins="*")  # Allow all origins; adjust in production
 
 # Create a Flask app
 app = Flask(__name__)
@@ -47,7 +50,18 @@ def send_message(sid, data):
 # Emit an array to the client
 @sio.event
 def request_array(data):
-    sio.emit('response_array', data_array)
+    sio.emit('response_array', data)
+
+@sio.event
+def create_course(data):
+    # Give course "data" to ML model
+    
+
+    # Add new course received from ML model in courses
+    courses.append({})
+
+    # Send 200 HTTP Code to client
+    sio.emit('create_course', 200)
 
 if __name__ == '__main__':
     # Run the app with eventlet's WSGI server
