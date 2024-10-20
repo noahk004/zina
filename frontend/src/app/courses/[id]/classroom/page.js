@@ -132,8 +132,6 @@ function Classroom() {
       <div className="w-screen flex justify-between h-full">
         <div className="p-5"></div>
 
-        <VoiceToText />
-
         <div className="h-full flex flex-col justify-center items-center">
           <div className="">
             {images && images.length > 0 && (
@@ -157,7 +155,9 @@ function Classroom() {
           )}
         </div>
 
-        <div className="py-[30px] pr-[30px]">
+        <VoiceToText />
+
+        <div className="h-full py-[30px] pr-[30px]" style={{overflow: "auto"}}>
           <div className="flex justify-end">
             <button
               onClick={() => setCamerasVisible(!camerasVisible)}
@@ -174,7 +174,7 @@ function Classroom() {
           <div
             className={`flex flex-col gap-2 j-fit ${
               camerasVisible ? "visible" : "invisible"
-            }`}
+            }`} style={{overflow: "auto"}}
           >
             <LocalUserComponent />
             {remoteUsers.map((user) => (
