@@ -51,9 +51,9 @@ def request_array(data):
 
 if __name__ == '__main__':
     # Run the app with eventlet's WSGI server
-    #import eventlet
-    #import eventlet.wsgi
-    #from werkzeug.middleware.dispatcher import DispatcherMiddleware
+    import eventlet
+    import eventlet.wsgi
+    from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
     # Wrap Flask app for eventlet
     app = DispatcherMiddleware(app)
