@@ -48,7 +48,7 @@ course_outline = {
 data_loader = ImageLoader()
 client = chromadb.Client()
 os.environ["MISTRAL_API_KEY"] = 'dmyWQ4LGbojOTdrlvWtwujkmLSScUQGo'
-llm = ChatMistralAI(model="mistral-large-2407")
+llm = ChatMistralAI(model="mistral-large-latest")
 
 def main():
     try:
@@ -282,52 +282,51 @@ def index():
 @sio.event
 def connect(sid, environ):
     print(f'Client connected: {sid}')
-    sio.emit('message', f'User {sid} has connected.', skip_sid=None)
 
 # Handle client disconnection
 @sio.event
 def disconnect(sid):
     print(f'Client disconnected: {sid}')
-    sio.emit('message', f'User {sid} has disconnected.', skip_sid=None)
 
 # Handle custom events from clients
 @sio.event
 def send_message(sid, data):
     # BEGIN DEEPGRAM AUDIO ADDING
 
-    filepath = "output" + sid + ".wav"
+    # filepath = "output" + sid + ".wav"
 
-    try:
+    # try:
 
-        if os.path.exists(filepath):
-            os.remove(filepath)
+    #     if os.path.exists(filepath):
+    #         os.remove(filepath)
 
-        API_KEY = '5eea543264e20ce240e0496ee8ed7abebab66d1d'
-        deepgram = DeepgramClient(api_key=API_KEY)
+    #     API_KEY = '5eea543264e20ce240e0496ee8ed7abebab66d1d'
+    #     deepgram = DeepgramClient(api_key=API_KEY)
 
-        audioOptions = SpeakOptions(
-                model="aura-asteria-en",
-                encoding="linear16",
-                container="wav"
-            )
+    #     audioOptions = SpeakOptions(
+    #             model="aura-asteria-en",
+    #             encoding="linear16",
+    #             container="wav"
+    #         )
         
-        SPEAK_OPTIONS = {"text": data}
+    #     SPEAK_OPTIONS = {"text": data}
         
-        audioResponse = deepgram.speak.v("1").save(filepath, SPEAK_OPTIONS, audioOptions)
-        print(audioResponse.to_json(indent=4))
+    #     audioResponse = deepgram.speak.v("1").save(filepath, SPEAK_OPTIONS, audioOptions)
+    #     print(audioResponse.to_json(indent=4))
 
-        with open(audioResponse.filename, "rb") as audio_file:
-            audio_data = audio_file.read()
-            # Emit the audio data as binary to the frontend
-            print("YAY")
+    #     with open(audioResponse.filename, "rb") as audio_file:
+    #         audio_data = audio_file.read()
+    #         # Emit the audio data as binary to the frontend
+    #         print("YAY")
 
-    except Exception as e:
-        print(f"Exception: {e}")
-    # END DEEPGRAM AUDIO ADDING
+    # except Exception as e:
+    #     print(f"Exception: {e}")
+    # # END DEEPGRAM AUDIO ADDING
 
     print(f'Received message from {sid}: {data}')
     images = []
     text_contents = []
+    audio_data = []
     # images = [
     #     'https://media.geeksforgeeks.org/wp-content/uploads/20220520182504/ClassificationofDataStructure-660x347.jpg',
     #     'https://cdn.programiz.com/sites/tutorial2program/files/queue.png',
@@ -346,7 +345,11 @@ def send_message(sid, data):
             query_texts=[topic],
             n_results=1
         )
-        images.append(image_results.get('documents', [None])[0][0])
+        print(image_results.get('distances')[0][0])
+        if image_results.get('distances')[0][0] <= 0.7 :
+            images.append(image_results.get('documents', [None])[0][0])
+        else:
+            images.append('')
         # Invoke the chain again
         response = rag_chain.invoke(
             {
