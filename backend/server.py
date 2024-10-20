@@ -170,11 +170,6 @@ rag_chain = (
 demo_ephemeral_chat_history = ChatMessageHistory()
 
 
-js_object = {
-    "image": 'img_aud\\image.png',
-    "audio": 'img_aud\\audio.mp3',
-    "text": "text"
-}
 
 courses = []
 
