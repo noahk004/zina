@@ -168,20 +168,19 @@ function App() {
   };
 
   return (
-    <>
-      <div>
-        <Page />
-      </div>
-      <div style={{ padding: "20px" }}>
+    <div>
+      <div className="grid grid-cols-2 text-lg" style={{ height: '80svh', width: '80svh' }}>
+        <div><Page /></div>
         <div>
           {images && images.length > 0 && (
             <img
               src={images[index]}
-              style={{ width: "500px", height: "auto" }}
+              style={{ width: "80%", height: "80%" }}
               alt="Slideshow"
             />
           )}
         </div>
+      </div>
 
       <input
         type="text"
@@ -194,15 +193,45 @@ function App() {
         Send
       </button>
       {currAudioUrl && <audio src={currAudioUrl} controls autoPlay />}
-    </div>
 
     <div className="relative w-full h-full">
       {microphone && <Visualizer microphone={microphone} />}
       <div className="absolute bottom-[8rem]  inset-x-0 max-w-4xl mx-auto text-center">
         {caption && <span className="bg-black/70 p-8">{caption}</span>}
+      <div style={{ marginLeft: "5svh", marginBottom: "5svh" }}>
+        <div className="absolute bomax-w-[600px] bg-black text-white text-sm" style={{bottom: "25svh"}}>
+          Transcriptions/Captions go here
+        </div>
+        <div style={{ bottom: "15svh" }}>
+        <div className="chat-box" style={{ 
+            maxWidth: "80%",
+            maxHeight: "300px", 
+            overflowY: "auto", 
+            border: "1px solid black", 
+            padding: "10px",  
+            backgroundColor: "#f0f0f0" 
+        }}>
+          {messages.map((msg, idx) => (
+            <div key={idx} >
+              <strong>{msg.sender === "user" ? "You" : "Server"}:</strong> {msg.text}
+            </div>
+          ))}
+        </div>
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type a message"
+            style={{ width: "80%", bottom: "10svh"}}
+          />
+          <button onClick={sendMessage} style={{ padding: "10px" }}>
+            Send
+          </button>
+          </div>
       </div>
     </div>
-    </>
+  </div>
+  </div>
   );
 }
 

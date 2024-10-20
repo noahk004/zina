@@ -47,9 +47,7 @@ function Classroom() {
   return (
     <div className="w-screen flex justify-between">
       <div className="mx-auto"></div>
-      <div className="absolute bomax-w-[600px] bg-black text-white text-sm bottom-[30px]">
-        Transcriptions/Captions go here
-      </div>
+      
 
       <div className="py-[30px] pr-[30px]">
         <button
