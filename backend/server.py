@@ -299,7 +299,14 @@ def disconnect(sid):
 @sio.event
 def send_message(sid, data):
     # BEGIN DEEPGRAM AUDIO ADDING
+
+    filepath = "output" + sid + ".wav"
+
     try:
+
+        if os.path.exists(filepath):
+            os.remove(filepath)
+
         API_KEY = '5eea543264e20ce240e0496ee8ed7abebab66d1d'
         deepgram = DeepgramClient(api_key=API_KEY)
 
@@ -311,7 +318,7 @@ def send_message(sid, data):
         
         SPEAK_OPTIONS = {"text": data}
         
-        audioResponse = deepgram.speak.v("1").save("output.wav", SPEAK_OPTIONS, audioOptions)
+        audioResponse = deepgram.speak.v("1").save(filepath, SPEAK_OPTIONS, audioOptions)
         print(audioResponse.to_json(indent=4))
 
         with open(audioResponse.filename, "rb") as audio_file:
