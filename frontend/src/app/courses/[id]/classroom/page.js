@@ -4,10 +4,8 @@ import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { motion } from "framer-motion";
 
-import { motion } from "framer-motion";
 
 import { useParams } from "next/navigation";
-
 
 const socket = io("http://localhost:5050");
 
@@ -100,14 +98,13 @@ function Classroom() {
 
     if (images && images.length > 0 && messages && messages.length > 0) {
       const displayContent = (currentIndex) => {
-
         if (isCancelled) return; // Stop if component is unmounted
 
         setIndex(currentIndex);
 
         if (currentIndex < images.length - 1) {
           setTimeout(() => {
-            displayImages(currentIndex + 1);
+            displayContent(currentIndex + 1);
           }, 3000);
 
         }
@@ -133,7 +130,7 @@ function Classroom() {
   if (!loading) {
     return (
       <div className="w-screen flex justify-between h-full">
-        <div className="p-5">soe text</div>
+        <div className="p-5"></div>
 
         <div className="h-full flex flex-col justify-center items-center">
           <div className="">
@@ -158,7 +155,9 @@ function Classroom() {
           )}
         </div>
 
-        <div className="py-[30px] pr-[30px]">
+        <VoiceToText />
+
+        <div className="h-full py-[30px] pr-[30px]" style={{overflow: "auto"}}>
           <div className="flex justify-end">
             <button
               onClick={() => setCamerasVisible(!camerasVisible)}
@@ -175,7 +174,7 @@ function Classroom() {
           <div
             className={`flex flex-col gap-2 j-fit ${
               camerasVisible ? "visible" : "invisible"
-            }`}
+            }`} style={{overflow: "auto"}}
           >
             <LocalUserComponent />
             {remoteUsers.map((user) => (
