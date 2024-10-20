@@ -20,9 +20,7 @@ import { CopyIcon } from "@radix-ui/react-icons";
 
 import { useJoin, useRemoteUsers } from "agora-rtc-react";
 
-export default Dictaphone
-
-function Page() {
+export default function Page() {
   const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
   return (
@@ -111,6 +109,7 @@ function Lobby() {
       {/* Right side */}
       <div>
         <div className="flex flex-wrap gap-5 py-[120px] justify-center gap-y-4 h-fit ">
+
           <LocalUserComponent />
           {remoteUsers.map((user) => (
             <RemoteUserComponent key={user.uid} user={user} />
