@@ -19,10 +19,12 @@ from langchain.embeddings.base import Embeddings
 from chromadb.utils.embedding_functions import OpenCLIPEmbeddingFunction
 from langchain.docstore.document import Document
 from langchain.memory import ConversationBufferMemory
-from langchain.memory import ChatMessageHistory
+from langchain_community.chat_message_histories import ChatMessageHistory#from langchain.memory import ChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.prompts import PromptTemplate
 from langchain_mistralai import ChatMistralAI
+
+from deepgram import (DeepgramClient, SpeakOptions)
 
 course_outline = {
     'data_structures': ['Classification of Data Structures', 'Introducing Queue', 'Introducing Stack']
@@ -169,8 +171,8 @@ demo_ephemeral_chat_history = ChatMessageHistory()
 
 
 js_object = {
-    "image": Image.open('img_aud\\image.png'),
-    "audio": 'img_aug\\audio.mp3',
+    "image": 'img_aud\\image.png',
+    "audio": 'img_aud\\audio.mp3',
     "text": "text"
 }
 
@@ -205,6 +207,31 @@ def disconnect(sid):
 # Handle custom events from clients
 @sio.event
 def send_message(sid, data):
+    # BEGIN DEEPGRAM AUDIO ADDING
+    try:
+        API_KEY = '5eea543264e20ce240e0496ee8ed7abebab66d1d'
+        deepgram = DeepgramClient(api_key=API_KEY)
+
+        audioOptions = SpeakOptions(
+                model="aura-asteria-en",
+                encoding="linear16",
+                container="wav"
+            )
+        
+        SPEAK_OPTIONS = {"text": data}
+        
+        audioResponse = deepgram.speak.v("1").save("output.wav", SPEAK_OPTIONS, audioOptions)
+        print(audioResponse.to_json(indent=4))
+
+        with open(audioResponse.filename, "rb") as audio_file:
+            audio_data = audio_file.read()
+            # Emit the audio data as binary to the frontend
+            print("YAY")
+
+    except Exception as e:
+        print(f"Exception: {e}")
+    # END DEEPGRAM AUDIO ADDING
+
     print(f'Received message from {sid}: {data}')
     images = []
     text_contents = []
@@ -235,24 +262,9 @@ def send_message(sid, data):
     #     text_contents.append(response)
     sio.emit('message', {
         'images': images,
-        'text_contents': text_contents
+        'text_contents': text_contents,
+        'audio_data': audio_data,
     })
-
-# Emit an array to the client
-@sio.event
-def request_array(data):
-    sio.emit('response_array', data)
-
-@sio.event
-def create_course(data):
-    # Give course "data" to ML model
-    js_return_val = sio.sendModel(data); # placeholder
-
-    # Add new course received from ML model in courses
-    courses.append(js_return_val)
-
-    # Send 200 HTTP Code to client
-    sio.emit('create_course', js_return_val)
 
 if __name__ == '__main__':
     # Run the app with eventlet's WSGI server

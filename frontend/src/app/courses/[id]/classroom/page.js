@@ -103,6 +103,7 @@ function Classroom() {
   }, [images]);
 
   const sendMessage = () => {
+    //generateAudio(message); // Added to generate audio and play after it is input
     console.log(socket);
     socket.emit("send_message", message);
     setMessage("");
