@@ -76,7 +76,7 @@ function Lobby() {
 
           <div className="mb-[40px]">
             <p className="underline underline-offset-4 mb-1">Schedule</p>
-            <div className="w-[350px] [&>*]:leading-6">
+            <div className="w-[35svh] [&>*]:leading-6">
               <ScheduleItem item="Classification of Data Structures" time="1" />
               <ScheduleItem item="Introducing Queue" time="1" />
               <ScheduleItem item="Introducing Stack" time="1" />
@@ -101,13 +101,13 @@ function Lobby() {
         </div>
         <div className="flex justify-center mb-[20px]">
           <div className="text-white">
-            <h3 className="font-semibold text-2xl">Invite your freinds!</h3>
+            <h3 className="font-semibold text-2xl">Invite your friends!</h3>
             <p className="mb-3">
               Send them the classmate invite link below to add your friends.
             </p>
-            <div className="relative flex gap-1 items-center bg-white text-purple3 rounded-full justify-between w-[600px] px-4 py-1 text-sm">
+            <div className="relative flex gap-1 items-center bg-white text-purple3 rounded-full justify-between w-[50svh] px-4 py-1 text-sm">
               <p
-                className="truncate w-[570px]"
+                className="truncate w-[50svh]"
                 styles={{ textOverflow: "clip" }}
               >
                 localhost:3000/courses/{id}/lobby?channel={channelName}
