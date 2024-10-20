@@ -1,29 +1,21 @@
 # server.py
 from flask import Flask, render_template
-from flask_socketio import SocketIO
+import socketio
 from PIL import Image
-#from pydub import AudioSegment
-#from pydub.utils import which
 
-# Set the path to FFmpeg and ffprobe manually
-#AudioSegment.converter = which("ffmpeg")
-#AudioSegment.ffprobe = which("ffprobe")
+image = Image.open('img_aud\\image.png')
 
-#print("FFmpeg path:", which("ffmpeg"))
-#print("FFprobe path:", which("ffprobe"))
+audio = 'img_aud\\dumbtest.wav'
 
-js_object = {
-    "image": Image.open('img_aud\\image.png'),
-    "audio": 'img_aug\\audio.mp3',
-    "text": "text"
-}
+text = "text"
 
-# Create a Socket.IO server
-#sio = socketio.Server(cors_allowed_origins="*")  # Allow all origins; adjust in production
+data_array = [image, audio, text]
 
 # Create a Flask app
 app = Flask(__name__)
-sio = SocketIO(app, cors_allowed_origins="*")
+
+# Create a Socket.IO server
+sio = socketio.Server(cors_allowed_origins="*")  # Allow all origins; adjust in production
 
 # Wrap the Flask app with Socket.IO's middleware
 #app.wsgi_app = SocketIO.WSGIApp(sio, app.wsgi_app)
@@ -53,9 +45,9 @@ def send_message(sid, data):
     sio.emit('message', f'User {sid} says: {data}', skip_sid=None)
 
 # Emit an array to the client
-@sio.on('request_object')
-def handle_request_object():
-    sio.emit('js_object', js_object)
+@sio.event
+def request_array(data):
+    sio.emit('response_array', data_array)
 
 if __name__ == '__main__':
     # Run the app with eventlet's WSGI server
@@ -64,6 +56,5 @@ if __name__ == '__main__':
     #from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
     # Wrap Flask app for eventlet
-    #app = DispatcherMiddleware(app)
-    #eventlet.wsgi.server(eventlet.listen(('', 5050)), app)
-    sio.run(app, host='0.0.0.0', port=5050)
+    app = DispatcherMiddleware(app)
+    eventlet.wsgi.server(eventlet.listen(('', 5050)), app)
