@@ -12,3 +12,4 @@ langchain-chroma
 langchain-mistralai
 open-clip-torch
 langchain_community
+deepgram-sdk

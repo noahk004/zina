@@ -2,10 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { motion } from "framer-motion";
 
 import { motion } from "framer-motion";
 
 import { useParams } from "next/navigation";
+
 
 const socket = io("http://localhost:5050");
 
@@ -39,7 +41,9 @@ export default function Page() {
 }
 
 function Classroom() {
+
   const [loading, setLoading] = useState(true);
+
   const [message, setMessage] = useState("");
 
   const [index, setIndex] = useState(0);
@@ -48,6 +52,20 @@ function Classroom() {
   const [messages, setMessages] = useState([]);
 
   const dummyText = "this needs to be spoken";
+
+  // ------ AGORA -------
+  const [calling, setCalling] = useState(true);
+  useJoin(
+    { appid: appId, channel: channelName, token: token ? token : null },
+    calling
+  );
+  const remoteUsers = useRemoteUsers();
+  // ------ AGORA -------
+
+  // ------ COMPONENTS -------
+  const [camerasVisible, setCamerasVisible] = useState(true);
+  // ------ COMPONENTS -------
+
 
   const { id } = useParams();
 
@@ -71,7 +89,9 @@ function Classroom() {
     // Listen for incoming messages from the server
     socket.on("message", (msg) => {
       console.log(msg);
+
       setLoading(false)
+
       setImages(msg["images"]);
       setMessages(msg["text_contents"]);
       console.log(msg["text_contents"]);
@@ -83,7 +103,7 @@ function Classroom() {
     };
   }, []);
 
-  // Use a recursive setTimeout to iterate through images once
+  // Use a function to iterate through images and messages based on speech completion
   useEffect(() => {
     let isCancelled = false; // Flag to check if component is unmounted
 
@@ -91,8 +111,9 @@ function Classroom() {
       sendMessage();
     }
 
-    if (images && images.length > 0) {
-      const displayImages = (currentIndex) => {
+    if (images && images.length > 0 && messages && messages.length > 0) {
+      const displayContent = (currentIndex) => {
+
         if (isCancelled) return; // Stop if component is unmounted
 
         setIndex(currentIndex);
@@ -101,20 +122,23 @@ function Classroom() {
           setTimeout(() => {
             displayImages(currentIndex + 1);
           }, 3000);
+
         }
       };
 
-      displayImages(0);
+      displayContent(0);
     }
 
     // Cleanup function to set the flag when component unmounts
     return () => {
       isCancelled = true;
+      window.speechSynthesis.cancel();
     };
-  }, [images]);
+  }, [images, messages]);
 
 
   const sendMessage = () => {
+    //generateAudio(message); // Added to generate audio and play after it is input
     console.log(socket);
     socket.emit("send_message", id);
     setMessage("");
@@ -184,4 +208,3 @@ function Classroom() {
       </div>
     );
   }
-}
