@@ -11,9 +11,6 @@ js_object = {
 
 courses = []
 
-# Create a Socket.IO server
-#sio = socketio.Server(cors_allowed_origins="*")  # Allow all origins; adjust in production
-
 # Create a Flask app
 app = Flask(__name__)
 
@@ -21,7 +18,7 @@ app = Flask(__name__)
 sio = socketio.Server(cors_allowed_origins="*")  # Allow all origins; adjust in production
 
 # Wrap the Flask app with Socket.IO's middleware
-#app.wsgi_app = SocketIO.WSGIApp(sio, app.wsgi_app)
+app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 
 # Optional: Define a route for the home page
 @app.route('/')
@@ -55,13 +52,13 @@ def request_array(data):
 @sio.event
 def create_course(data):
     # Give course "data" to ML model
-    
+    js_return_val = sio.sendModel(data); # placeholder
 
     # Add new course received from ML model in courses
-    courses.append({})
+    courses.append(js_return_val)
 
     # Send 200 HTTP Code to client
-    sio.emit('create_course', 200)
+    sio.emit('create_course', js_return_val)
 
 if __name__ == '__main__':
     # Run the app with eventlet's WSGI server
