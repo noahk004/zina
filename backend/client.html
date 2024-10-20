@@ -1,0 +1,49 @@
+<!-- client.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket.IO Client</title>
+    <!-- Load Socket.IO client library without integrity and crossorigin attributes -->
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Socket.IO Client</h1>
+    <div>
+        <input type="text" id="messageInput" placeholder="Type a message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+    <ul id="messages"></ul>
+
+    <!-- Place your script here, after loading the Socket.IO client library -->
+    <script>
+        // Initialize the socket connection
+        const socket = io('http://localhost:5050');
+
+        // Listen for 'message' events from the server
+        socket.on('message', (data) => {
+            const messages = document.getElementById('messages');
+            const li = document.createElement('li');
+            li.textContent = data;
+            messages.appendChild(li);
+        });
+
+        // Function to send messages to the server
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value;
+            if (message.trim() !== '') {
+                socket.emit('send_message', message);
+                
+                // Optionally, display your own message immediately
+                const messages = document.getElementById('messages');
+                const li = document.createElement('li');
+                li.textContent = `You: ${message}`;
+                messages.appendChild(li);
+
+                input.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
