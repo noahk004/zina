@@ -24,12 +24,13 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.prompts import PromptTemplate
 from langchain_mistralai import ChatMistralAI
 
-
-embedding_function = OpenCLIPEmbeddingFunction()
+course_outline = {
+    'data_structures': ['Classification of Data Structures', 'Introducing Queue', 'Introducing Stack']
+}
 data_loader = ImageLoader()
 client = chromadb.Client()
 os.environ["MISTRAL_API_KEY"] = 'dmyWQ4LGbojOTdrlvWtwujkmLSScUQGo'
-llm = ChatMistralAI(model="mistral-large-latest")
+llm = ChatMistralAI(model="mistral-large-2407")
 
 def scrape_text_and_images(url):
     # Fetch the content of the URL
@@ -71,10 +72,14 @@ class ChromaOpenCLIPEmbeddings(Embeddings):
 
 embeddings = ChromaOpenCLIPEmbeddings()
 vectorstore = Chroma(
-    collection_name='text_collection3',
+    collection_name='text_collection',
     embedding_function=embeddings,
 )
-urls = ['https://www.programiz.com/dsa/queue', 'https://www.programiz.com/dsa/stack']
+image_collection = client.get_or_create_collection(
+    name="image_collection",
+    embedding_function=OpenCLIPEmbeddingFunction()
+)
+urls = ['https://www.programiz.com/dsa/queue', 'https://www.programiz.com/dsa/stack', 'https://www.geeksforgeeks.org/introduction-to-data-structures/']
 for url in urls:
     text, image_urls = scrape_text_and_images(url)
     doc = Document(page_content=text, metadata={'source': url})
@@ -85,12 +90,18 @@ for url in urls:
         texts=text_chunks,
         metadatas=[{'source': url}] * len(splits)
     )
+    for img_url in image_urls:
+        image_collection.add(
+            documents=[img_url],
+            metadatas=[{'source': url}],
+            ids=[img_url]
+        )
 retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
 
 prompt_template = PromptTemplate(
     input_variables=["chat_history", "context", "question"],
     template="""
-        You are a tutoring agent that summarizes retrieves documents to answer questions. Limit the answer to 100 words.
+        You are a tutoring agent that summarizes retrieves documents to answer questions. Limit the answer to 50 words.
         The following is a conversation between a user and an AI assistant.
 
         {chat_history}
@@ -195,18 +206,25 @@ def disconnect(sid):
 @sio.event
 def send_message(sid, data):
     print(f'Received message from {sid}: {data}')
-    # Broadcast the received message to all clients
-    demo_ephemeral_chat_history.add_user_message(data)
-
-    # Invoke the chain again
-    response = rag_chain.invoke(
-        {
-            "messages": [(demo_ephemeral_chat_history.messages)[-1]],
-        }
-    )
-    print(demo_ephemeral_chat_history.messages)
-    sio.emit('message', f'User {sid} says: {data}', skip_sid=None)
-    sio.emit('message', f'AI {sid} says: {response}', skip_sid=None)
+    images = []
+    text_contents = []
+    for topic in course_outline.get(data, [data]):
+        # Broadcast the received message to all clients
+        demo_ephemeral_chat_history.add_user_message(topic)
+        image_results = image_collection.query(
+            query_texts=[topic],
+            n_results=1
+        )
+        images.append(image_results.get('documents', [None])[0][0])
+        # Invoke the chain again
+        response = rag_chain.invoke(
+            {
+                "messages": [(demo_ephemeral_chat_history.messages)[-1]],
+            }
+        )
+        text_contents.append(response)
+    sio.emit('message', f'AI says: {str(images)}', skip_sid=None)
+    sio.emit('message', f'AI says: {str(text_contents)}', skip_sid=None)
 
 # Emit an array to the client
 @sio.event
