@@ -1,0 +1,3 @@
+export const appId = "d417846ca18d43fba41b12655eb41dc4"
+export const channelName = "mychannel"
+export const token = "007eJxTYJDPt738z1L0fIFwjOb9Q2+WcX1dMG0/V/9P3rTrGlcO6rcrMKSYGJpbmJglJxpapJgYpyUlmhgmGRqZmZqmJpkYpiSbLCwSSW8IZGSQTpBmZmSAQBCfkyG3MjkjMS8vNYeBAQDzbCDD"

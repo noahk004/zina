@@ -1,101 +1,104 @@
+"use client";
+
+import { motion } from "framer-motion";
+
+import Typewriter from "typewriter-effect";
+
 import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+import { useState } from "react";
+
+import Navigation from "@/components/navigation/Navigation.js";
+
+import landing from "@/media/landing.png";
+import logoWhite from "@/media/logo-white.png";
+
+export default function Page() {
+  const [prompt, setPrompt] = useState("");
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div>
+      <Navigation />
+      <div className="w-screen translate-y-[25vh] flex flex-col justify-center items-center">
+        <div className="font-semibold text-6xl text-purpleLight mb-7 flex items-end">
+          &nbsp;
+          <Typewriter
+            onInit={(typewriter) => {
+              typewriter
+                .pauseFor(1000)
+                .typeString("I want to learn about the human mind.")
+                .pauseFor(2500)
+                .deleteChars(16)
+                .pauseFor(200)
+                .typeString(" creative writing.")
+                .pauseFor(2500)
+                .deleteChars(18)
+                .pauseFor(200)
+                .typeString(" music history.")
+                .pauseFor(2500)
+                .deleteAll()
+                .pauseFor(200)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+                .typeString("Give me a lesson on linked lists.")
+                .pauseFor(2500)
+                .deleteChars(14)
+                .pauseFor(200)
+                .typeString(" protein synthesis.")
+                .pauseFor(2500)
+                .deleteChars(19)
+                .pauseFor(200)
+                .typeString(" thermodynamics.")
+                .pauseFor(2500)
+                .deleteAll()
+                .pauseFor(200)
+
+                .typeString("Show me the process of launching a new product.")
+                .pauseFor(2500)
+                .deleteChars(25)
+                .pauseFor(200)
+                .typeString(" deploying an EC2 instance.")
+                .pauseFor(2500)
+                .deleteChars(27)
+                .pauseFor(200)
+                .typeString(" training a neural network.")
+                .pauseFor(2500)
+                .deleteAll()
+                .start();
+            }}
+            options={{
+              loop: true,
+              delay: 50,
+              deleteSpeed: 30,
+            }}
+          />&nbsp;
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+        <div className="flex gap-4 mb-4">
+          <input
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="What would you like to learn today?"
+            className="w-[600px] p-3 rounded-full text-lg px-6"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <button
+            onClick={() => {}}
+            className="text-lg p-3 bg-purpleLight rounded-full duration-200 hover:bg-white hover:shadow-xl px-5 disabled:bg-gray-200 disabled:text-gray-400 disabled:hover:shadow-none"
+            disabled={!prompt}
+          >
+            Let's go!
+          </button>
+        </div>
+        <div>
+          <Image src={logoWhite} alt="logo" className="w-20" />
+        </div>
+      </div>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <Image
+          src={landing}
+          alt="landing design"
+          className="absolute w-screen bottom-0"
+        />
+      </motion.div>
     </div>
   );
 }
