@@ -103,18 +103,13 @@ function Classroom() {
   }, [images]);
 
   const sendMessage = () => {
+    //generateAudio(message); // Added to generate audio and play after it is input
     console.log(socket);
     socket.emit("send_message", message);
     setMessage("");
   };
 
   return (
-<<<<<<< HEAD
-    <>
-      <div className="grid grid-cols-2 text-lg" style={{ height: '80svh', width: '80svh' }}>
-        <div><Page /></div>
-        <div>
-=======
     <div className="w-screen flex justify-between bg-purpleLight h-full">
       <div className="p-5">
         <button onClick={sendMessage}>Start</button>
@@ -122,55 +117,16 @@ function Classroom() {
 
       <div className="h-full flex flex-col justify-center items-center">
         <div className="">
->>>>>>> main
           {images && images.length > 0 && (
             <motion.img
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               src={images[index]}
-<<<<<<< HEAD
-              style={{ width: "80%", height: "80%" }}
-=======
               className="w-[800px] min-h-[200px] bg-white rounded-3xl"
->>>>>>> main
               alt="Slideshow"
             />
           )}
         </div>
-<<<<<<< HEAD
-      </div>
-
-      <div style={{ marginLeft: "5svh", marginBottom: "5svh" }}>
-        <div className="absolute bomax-w-[600px] bg-black text-white text-sm" style={{bottom: "25svh"}}>
-          Transcriptions/Captions go here
-        </div>
-        <div style={{ bottom: "15svh" }}>
-        <div className="chat-box" style={{ 
-            maxWidth: "80%",
-            maxHeight: "300px", 
-            overflowY: "auto", 
-            border: "1px solid black", 
-            padding: "10px",  
-            backgroundColor: "#f0f0f0" 
-        }}>
-          {messages.map((msg, idx) => (
-            <div key={idx} >
-              <strong>{msg.sender === "user" ? "You" : "Server"}:</strong> {msg.text}
-            </div>
-          ))}
-        </div>
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type a message"
-            style={{ width: "80%", bottom: "10svh"}}
-          />
-          <button onClick={sendMessage} style={{ padding: "10px" }}>
-            Send
-          </button>
-          </div>
-=======
         {messages && messages.length > 0 && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -180,7 +136,6 @@ function Classroom() {
             {messages[index]}
           </motion.div>
         )}
->>>>>>> main
       </div>
 
       <div className="py-[30px] pr-[30px]">
