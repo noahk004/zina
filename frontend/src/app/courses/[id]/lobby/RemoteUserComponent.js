@@ -11,7 +11,7 @@ export default function RemoteUserComponent({ user }) {
         <RemoteUser user={user} />
       </div>
       <div className="flex px-3 justify-between items-center py-[3px]">
-        <p className="text-sm">{user.uid}</p>
+        {/* <p className="text-sm">{user.uid}</p> */}
       </div>
     </div>
   );
