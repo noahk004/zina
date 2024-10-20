@@ -93,7 +93,7 @@ function Lobby() {
 
       {/* Right side */}
       <div>
-        <div className="flex flex-wrap gap-5 py-[50px] justify-center gap-y-4 h-fit ">
+        <div className="flex flex-wrap gap-5 py-[10svh] mx-auto justify-center gap-y-4 h-fit " style={{ width: "50svh"}}>
           <LocalUserComponent />
           {remoteUsers.map((user) => (
             <RemoteUserComponent key={user.uid} name={user.uid} />
