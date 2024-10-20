@@ -23,8 +23,8 @@ const VoiceToText = () => {
     <div className="flex flex-col gap-6">
       {" "}
       <div className="flex gap-6">
-        <button onClick={startListening}>start</button>
-        <button onClick={handleSend}>stop</button>
+        <button onClick={startListening} className="rounded-full hover:bg-gray-300 duration-200 p-2">start</button>
+        <button onClick={handleSend} className="rounded-full hover:bg-gray-300 duration-200 p-2">stop</button>
       </div>
       <h2>{transcript}</h2>
     </div>
