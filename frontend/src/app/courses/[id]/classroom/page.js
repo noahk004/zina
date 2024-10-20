@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-
 import { motion } from "framer-motion";
 
 import { generateToken } from "@/components/agora/tokenGenerator";
@@ -43,11 +42,6 @@ function Classroom() {
   const [images, setImages] = useState([]);
   const [messages, setMessages] = useState([]);
 
-  const dummyText = "this needs to be spoken";
-
-  // const uid = generateUid()
-  // const token = generateToken(uid)
-
   // ------ AGORA -------
   const [calling, setCalling] = useState(true);
   useJoin(
@@ -76,31 +70,63 @@ function Classroom() {
     };
   }, []);
 
-  // Use a recursive setTimeout to iterate through images once
+  // Use a function to iterate through images and messages based on speech completion
   useEffect(() => {
     let isCancelled = false; // Flag to check if component is unmounted
 
-    if (images && images.length > 0) {
-      const displayImages = (currentIndex) => {
+    if (images && images.length > 0 && messages && messages.length > 0) {
+      const displayContent = (currentIndex) => {
         if (isCancelled) return; // Stop if component is unmounted
 
         setIndex(currentIndex);
 
-        if (currentIndex < images.length - 1) {
-          setTimeout(() => {
-            displayImages(currentIndex + 1);
-          }, 3000);
+        // Speak the current message
+        if ("speechSynthesis" in window) {
+          // Cancel any ongoing speech
+          window.speechSynthesis.cancel();
+
+          const currentMessage = messages[currentIndex];
+          const utterance = new SpeechSynthesisUtterance(currentMessage);
+
+          // Optional: Set properties like language, pitch, rate
+          utterance.lang = "en-US";
+          utterance.rate = 1;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+
+          // When the speech ends, move to the next index
+          utterance.onend = () => {
+            if (isCancelled) return;
+
+            if (currentIndex < images.length - 1) {
+              displayContent(currentIndex + 1);
+            }
+          };
+
+          // Speak the message
+          window.speechSynthesis.speak(utterance);
+        } else {
+          console.warn("Speech Synthesis not supported in this browser.");
+
+          // If speech synthesis is not supported, proceed after a delay
+          if (currentIndex < images.length - 1) {
+            setTimeout(() => {
+              if (isCancelled) return;
+              displayContent(currentIndex + 1);
+            }, 3000);
+          }
         }
       };
 
-      displayImages(0);
+      displayContent(0);
     }
 
     // Cleanup function to set the flag when component unmounts
     return () => {
       isCancelled = true;
+      window.speechSynthesis.cancel();
     };
-  }, [images]);
+  }, [images, messages]);
 
   const sendMessage = () => {
     //generateAudio(message); // Added to generate audio and play after it is input
@@ -119,6 +145,7 @@ function Classroom() {
         <div className="">
           {images && images.length > 0 && (
             <motion.img
+              key={index} // Add key to trigger re-render
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               src={images[index]}
@@ -129,6 +156,7 @@ function Classroom() {
         </div>
         {messages && messages.length > 0 && (
           <motion.div
+            key={index} // Add key to trigger re-render
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="absolute max-w-[600px] bg-black text-white text-sm bottom-[50px]"
