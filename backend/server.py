@@ -200,23 +200,35 @@ def send_message(sid, data):
     print(f'Received message from {sid}: {data}')
     images = []
     text_contents = []
-    for topic in course_outline.get(data, [data]):
-        # Broadcast the received message to all clients
-        demo_ephemeral_chat_history.add_user_message(topic)
-        image_results = image_collection.query(
-            query_texts=[topic],
-            n_results=1
-        )
-        images.append(image_results.get('documents', [None])[0][0])
-        # Invoke the chain again
-        response = rag_chain.invoke(
-            {
-                "messages": [(demo_ephemeral_chat_history.messages)[-1]],
-            }
-        )
-        text_contents.append(response)
-    sio.emit('message', f'AI says: {str(images)}', skip_sid=None)
-    sio.emit('message', f'AI says: {str(text_contents)}', skip_sid=None)
+    images = [
+        'https://media.geeksforgeeks.org/wp-content/uploads/20220520182504/ClassificationofDataStructure-660x347.jpg',
+        'https://cdn.programiz.com/sites/tutorial2program/files/queue.png',
+        'https://cdn.programiz.com/sites/tutorial2program/files/stack.png'
+    ]
+    text_contents = [
+        'Data structures are classified into various types, including: - Linear: Arrays, Linked Lists (Singly, Doubly, Circular), Stacks, Queues. - Non-linear: Trees (Generic, Binary, BST, AVL, etc.), Graphs. - Others: Hash Tables, Heaps, Sets, Maps.',
+        'A queue is a fundamental data structure in computer science that follows the First-In-First-Out (FIFO) principle. Elements are added at the rear and removed from the front. Queues are commonly used in scenarios like task scheduling and breadth-first search algorithms.',
+        'Stack is a linear data structure that follows the Last In, First Out (LIFO) principle. It supports two main operations: push (add element to top) and pop (remove top element).'
+    ]
+    # for topic in course_outline.get(data, [data]):
+    #     # Broadcast the received message to all clients
+    #     demo_ephemeral_chat_history.add_user_message(topic)
+    #     image_results = image_collection.query(
+    #         query_texts=[topic],
+    #         n_results=1
+    #     )
+    #     images.append(image_results.get('documents', [None])[0][0])
+    #     # Invoke the chain again
+    #     response = rag_chain.invoke(
+    #         {
+    #             "messages": [(demo_ephemeral_chat_history.messages)[-1]],
+    #         }
+    #     )
+    #     text_contents.append(response)
+    sio.emit('message', {
+        'images': images,
+        'text_contents': text_contents
+    })
 
 if __name__ == '__main__':
     # Run the app with eventlet's WSGI server
