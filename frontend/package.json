@@ -18,7 +18,10 @@
     "next": "14.2.14",
     "react": "^18",
     "react-dom": "^18",
+    "react-speakup": "^1.1.2",
+    "react-speech-recognition": "^3.10.0",
     "react-spinners": "^0.14.1",
+    "regenerator-runtime": "^0.14.1",
     "socket.io-client": "^4.8.0",
     "typewriter-effect": "^2.21.0"
   },
