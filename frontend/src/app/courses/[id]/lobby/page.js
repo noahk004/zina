@@ -2,6 +2,8 @@
 
 import Link from "next/link"
 
+import Dictaphone from "../classroom/VoiceToText";
+
 import LocalUserComponent from "./LocalUserComponent";
 import RemoteUserComponent from "./RemoteUserComponent";
 
@@ -57,6 +59,19 @@ function Lobby() {
     }, 2000);
   };
 
+  const getCourseName = (str) => {
+    if (str == "data_structures") {
+      return "Data Structures"
+    }
+    else if (str == "queues") {
+      return "Queues"
+    }
+    else if (str == "stacks") {
+      return "Stacks"
+    }
+    return str
+  }
+
   return (
     <div className="w-screen h-screen grid grid-cols-2 text-lg">
       <button
@@ -71,7 +86,7 @@ function Lobby() {
         <div>
           <div className="mb-[25px]">
             <p>Lesson topic:</p>
-            <h1 className="font-bold text-4xl">Course: Data Structures</h1>
+            <h1 className="font-bold text-4xl">Intro to {getCourseName(id)}</h1>
           </div>
 
           <div className="mb-[40px]">
@@ -93,10 +108,11 @@ function Lobby() {
 
       {/* Right side */}
       <div>
-        <div className="flex flex-wrap gap-5 py-[10svh] mx-auto justify-center gap-y-4 h-fit " style={{ width: "50svh"}}>
+        <div className="flex flex-wrap gap-5 py-[120px] justify-center gap-y-4 h-fit ">
+
           <LocalUserComponent />
           {remoteUsers.map((user) => (
-            <RemoteUserComponent key={user.uid} name={user.uid} />
+            <RemoteUserComponent key={user.uid} user={user} />
           ))}
         </div>
         <div className="flex justify-center mb-[20px]">
