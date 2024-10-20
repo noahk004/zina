@@ -71,22 +71,22 @@ function Lobby() {
         <div>
           <div className="mb-[25px]">
             <p>Lesson topic:</p>
-            <h1 className="font-bold text-4xl">Course {id}</h1>
+            <h1 className="font-bold text-4xl">Course: Data Structures</h1>
           </div>
 
           <div className="mb-[40px]">
             <p className="underline underline-offset-4 mb-1">Schedule</p>
             <div className="w-[350px] [&>*]:leading-6">
-              <ScheduleItem item="Introduction" time="5" />
-              <ScheduleItem item="Lesson" time="40" />
-              <ScheduleItem item="Questions" time="15" />
-              <ScheduleItem item="Wrap Up" time="5" />
+              <ScheduleItem item="Classification of Data Structures" time="1" />
+              <ScheduleItem item="Introducing Queue" time="1" />
+              <ScheduleItem item="Introducing Stack" time="1" />
+              <ScheduleItem item="Q&A" time="2" />
             </div>
           </div>
 
           <div className="text-end">
             <p className="leading-6">Total estimated duration</p>
-            <h2 className="font-bold text-3xl">65 min.</h2>
+            <h2 className="font-bold text-3xl">5 min.</h2>
           </div>
         </div>
       </div>
