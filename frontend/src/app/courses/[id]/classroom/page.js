@@ -1,5 +1,6 @@
 "use client";
 
+
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
@@ -10,8 +11,6 @@ import { useVoiceToText } from "react-speakup";
 
 import { motion } from "framer-motion";
 
-import { generateToken } from "@/components/agora/tokenGenerator";
-import generateUid from "@/components/agora/uidGenerator";
 
 const socket = io("http://localhost:5050");
 
@@ -30,7 +29,11 @@ import AgoraRTC, {
 
 import { CaretDownIcon, CaretRightIcon } from "@radix-ui/react-icons";
 
-export default function Page() {
+import VoiceToText from "./VoiceToText";
+
+export default VoiceToText
+
+function Page() {
   const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
   return (
@@ -84,6 +87,7 @@ function Classroom() {
   const [camerasVisible, setCamerasVisible] = useState(true);
   // ------ COMPONENTS -------
 
+
   useEffect(() => {
     // Listen for incoming messages from the server
     socket.on("message", (msg) => {
@@ -102,6 +106,10 @@ function Classroom() {
   // Use a recursive setTimeout to iterate through images once
   useEffect(() => {
     let isCancelled = false; // Flag to check if component is unmounted
+
+    if (!images) {
+      sendMessage()
+    }
 
     if (images && images.length > 0) {
       const displayImages = (currentIndex) => {
@@ -133,9 +141,9 @@ function Classroom() {
   };
 
   return (
-    <div className="w-screen flex justify-between bg-purpleLight h-full">
+    <div className="w-screen flex justify-between h-full">
       <div className="p-5">
-        <button onClick={sendMessage}>Start</button>
+        soe text
       </div>
 
       <VoiceToTextComponent />
@@ -164,16 +172,19 @@ function Classroom() {
       </div>
 
       <div className="py-[30px] pr-[30px]">
-        <button
-          onClick={() => setCamerasVisible(!camerasVisible)}
-          className="w-fit"
-        >
-          {camerasVisible ? (
-            <CaretRightIcon className="w-5 h-5 text-purple3" />
-          ) : (
-            <CaretDownIcon className="w-5 h-5 text-purple3" />
-          )}
-        </button>
+        <div className="flex justify-end">
+          <button
+            onClick={() => setCamerasVisible(!camerasVisible)}
+            className="p-2 hover:bg-purple-800 duration-200 rounded-full mb-2"
+          >
+            {camerasVisible ? (
+              <CaretRightIcon className="w-5 h-5 text-white" />
+            ) : (
+              <CaretDownIcon className="w-5 h-5 text-white" />
+            )}
+          </button>
+        </div>
+
         <div
           className={`flex flex-col gap-2 j-fit ${
             camerasVisible ? "visible" : "invisible"

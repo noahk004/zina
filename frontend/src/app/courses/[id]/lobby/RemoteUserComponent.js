@@ -4,6 +4,7 @@ import {
 
 export default function RemoteUserComponent({ user }) {
 
+
   return (
     <div className="rounded-lg overflow-hidden bg-white w-[200px] h-fit">
       <div className="rounded-lg overflow-hidden h-[120px]">
