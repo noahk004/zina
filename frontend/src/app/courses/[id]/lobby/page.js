@@ -20,9 +20,7 @@ import { CopyIcon } from "@radix-ui/react-icons";
 
 import { useJoin, useRemoteUsers } from "agora-rtc-react";
 
-export default Dictaphone
-
-function Page() {
+export default function Page() {
   const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
   return (

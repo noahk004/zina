@@ -1,11 +1,11 @@
 "use client";
 
-
 import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 import { motion } from "framer-motion";
 
+import { useParams } from "next/navigation";
 
 const socket = io("http://localhost:5050");
 
@@ -22,13 +22,13 @@ import AgoraRTC, {
   useRTCClient,
 } from "agora-rtc-react";
 
+import { PropagateLoader } from "react-spinners";
+
 import { CaretDownIcon, CaretRightIcon } from "@radix-ui/react-icons";
 
 import VoiceToText from "./VoiceToText";
 
-export default VoiceToText
-
-function Page() {
+export default function Page() {
   const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 
   return (
@@ -39,6 +39,7 @@ function Page() {
 }
 
 function Classroom() {
+  const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
   const [index, setIndex] = useState(0);
@@ -47,6 +48,8 @@ function Classroom() {
   const [messages, setMessages] = useState([]);
 
   const dummyText = "this needs to be spoken";
+
+  const { id } = useParams();
 
   // const uid = generateUid()
   // const token = generateToken(uid)
@@ -64,11 +67,11 @@ function Classroom() {
   const [camerasVisible, setCamerasVisible] = useState(true);
   // ------ COMPONENTS -------
 
-
   useEffect(() => {
     // Listen for incoming messages from the server
     socket.on("message", (msg) => {
       console.log(msg);
+      setLoading(false)
       setImages(msg["images"]);
       setMessages(msg["text_contents"]);
       console.log(msg["text_contents"]);
@@ -85,7 +88,7 @@ function Classroom() {
     let isCancelled = false; // Flag to check if component is unmounted
 
     if (!images) {
-      sendMessage()
+      sendMessage();
     }
 
     if (images && images.length > 0) {
@@ -110,66 +113,75 @@ function Classroom() {
     };
   }, [images]);
 
+
   const sendMessage = () => {
     console.log(socket);
-    socket.emit("send_message", message);
+    socket.emit("send_message", id);
     setMessage("");
   };
+  if (!loading) {
+    return (
+      <div className="w-screen flex justify-between h-full">
+        <div className="p-5">soe text</div>
 
-  return (
-    <div className="w-screen flex justify-between h-full">
-      <div className="p-5">
-        soe text
-      </div>
-
-      <div className="h-full flex flex-col justify-center items-center">
-        <div className="">
-          {images && images.length > 0 && (
-            <motion.img
+        <div className="h-full flex flex-col justify-center items-center">
+          <div className="">
+            {images && images.length > 0 && (
+              <motion.img
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                src={images[index]}
+                className="w-[800px] min-h-[200px] bg-white rounded-3xl"
+                alt="Slideshow"
+              />
+            )}
+          </div>
+          {messages && messages.length > 0 && (
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              src={images[index]}
-              className="w-[800px] min-h-[200px] bg-white rounded-3xl"
-              alt="Slideshow"
-            />
+              className="absolute max-w-[600px] bg-black text-white text-sm bottom-[50px]"
+            >
+              {messages[index]}
+            </motion.div>
           )}
         </div>
-        {messages && messages.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="absolute max-w-[600px] bg-black text-white text-sm bottom-[50px]"
-          >
-            {messages[index]}
-          </motion.div>
-        )}
-      </div>
 
-      <div className="py-[30px] pr-[30px]">
-        <div className="flex justify-end">
-          <button
-            onClick={() => setCamerasVisible(!camerasVisible)}
-            className="p-2 hover:bg-purple-800 duration-200 rounded-full mb-2"
-          >
-            {camerasVisible ? (
-              <CaretRightIcon className="w-5 h-5 text-white" />
-            ) : (
-              <CaretDownIcon className="w-5 h-5 text-white" />
-            )}
-          </button>
-        </div>
+        <div className="py-[30px] pr-[30px]">
+          <div className="flex justify-end">
+            <button
+              onClick={() => setCamerasVisible(!camerasVisible)}
+              className="p-2 hover:bg-purple-800 duration-200 rounded-full mb-2"
+            >
+              {camerasVisible ? (
+                <CaretRightIcon className="w-5 h-5 text-white" />
+              ) : (
+                <CaretDownIcon className="w-5 h-5 text-white" />
+              )}
+            </button>
+          </div>
 
-        <div
-          className={`flex flex-col gap-2 j-fit ${
-            camerasVisible ? "visible" : "invisible"
-          }`}
-        >
-          <LocalUserComponent />
-          {remoteUsers.map((user) => (
-            <RemoteUserComponent key={user.uid} user={user} />
-          ))}
+          <div
+            className={`flex flex-col gap-2 j-fit ${
+              camerasVisible ? "visible" : "invisible"
+            }`}
+          >
+            <LocalUserComponent />
+            {remoteUsers.map((user) => (
+              <RemoteUserComponent key={user.uid} user={user} />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div classsName="flex justify-center items-center w-screen h-screen">
+        <div>
+          <p className="text-white">Loading your course...</p>
+          <PropagateLoader color="#EAEBED" size={10} />
+        </div>
+      </div>
+    );
+  }
 }
