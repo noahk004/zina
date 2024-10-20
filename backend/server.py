@@ -168,11 +168,19 @@ rag_chain = (
 demo_ephemeral_chat_history = ChatMessageHistory()
 
 
-# Create a Socket.IO server
-sio = socketio.Server(cors_allowed_origins="*")  # Allow all origins; adjust in production
+js_object = {
+    "image": Image.open('img_aud\\image.png'),
+    "audio": 'img_aug\\audio.mp3',
+    "text": "text"
+}
+
+courses = []
 
 # Create a Flask app
 app = Flask(__name__)
+
+# Create a Socket.IO server
+sio = socketio.Server(cors_allowed_origins="*")  # Allow all origins; adjust in production
 
 # Wrap the Flask app with Socket.IO's middleware
 app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
@@ -229,6 +237,22 @@ def send_message(sid, data):
         'images': images,
         'text_contents': text_contents
     })
+
+# Emit an array to the client
+@sio.event
+def request_array(data):
+    sio.emit('response_array', data)
+
+@sio.event
+def create_course(data):
+    # Give course "data" to ML model
+    js_return_val = sio.sendModel(data); # placeholder
+
+    # Add new course received from ML model in courses
+    courses.append(js_return_val)
+
+    # Send 200 HTTP Code to client
+    sio.emit('create_course', js_return_val)
 
 if __name__ == '__main__':
     # Run the app with eventlet's WSGI server
