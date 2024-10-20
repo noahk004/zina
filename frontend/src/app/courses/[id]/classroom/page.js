@@ -1,73 +1,64 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { appId, channelName, token } from "@/components/agora/data";
-
-import { useJoin, useRemoteUsers } from "agora-rtc-react";
-
-import LocalUserComponent from "../lobby/LocalUserComponent";
-import RemoteUserComponent from "../lobby/RemoteUserComponent";
-
-import AgoraRTC, { AgoraRTCProvider } from "agora-rtc-react";
-
-import { CaretDownIcon, CaretRightIcon } from "@radix-ui/react-icons";
+import { useEffect, useState } from 'react';
 
 export default function Page() {
-  const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+  const [socket, setSocket] = useState(null);
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    // Create WebSocket connection
+    const wsUrl = ""
+    if (!wsUrl) {
+        throw new Error("Please enter a URL for the client websocket to connect to.")
+    }
+
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+      console.log('Connected to WebSocket server');
+    };
+
+    ws.onmessage = (event) => {
+      // Receive messages from the server
+      setMessages((prevMessages) => [...prevMessages, event.data]);
+    };
+
+    ws.onclose = () => {
+      console.log('Disconnected from WebSocket server');
+    };
+
+    setSocket(ws);
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
+  const sendMessage = () => {
+    if (socket) {
+      socket.send(message);
+      setMessage('');
+    }
+  };
 
   return (
-    <AgoraRTCProvider client={client}>
-      <Classroom />
-    </AgoraRTCProvider>
-  );
-}
+    <div>
+      <h1>WebSocket Chat</h1>
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="Type a message"
+      />
+      <button onClick={sendMessage}>Send</button>
 
-function Classroom() {
-  const [stageIndex, setStateIndex] = useState(0);
-  const [sectionList, setSectionList] = useState(null);
-
-  // ------ AGORA -------
-  const [calling, setCalling] = useState(true);
-  useJoin(
-    { appid: appId, channel: channelName, token: token ? token : null },
-    calling
-  );
-  const remoteUsers = useRemoteUsers();
-  // ------ AGORA -------
-
-  // ------ COMPONENTS -------
-  const [camerasVisible, setCamerasVisible] = useState(true);
-  // ------ COMPONENTS -------
-
-
-  return (
-    <div className="w-screen flex justify-between">
-      <div></div>
-      <div className="absolute bomax-w-[600px] bg-black text-white text-sm bottom-[30px]">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
-      </div>
-
-      <div
-        className="py-[30px] pr-[30px]"
-      >
-        <button onClick={() => setCamerasVisible(!camerasVisible)} className="w-fit">
-          {camerasVisible ? (
-            <CaretRightIcon className="w-5 h-5 text-purple3" />
-          ) : (
-            <CaretDownIcon
-              className="w-5 h-5 text-purple3"
-            />
-          )}
-        </button>
-        <div className={`flex flex-col gap-2 j-fit ${camerasVisible ? "visible" : "invisible"}`}>
-        <LocalUserComponent />
-        {remoteUsers.map((user) => (
-          <RemoteUserComponent key={user.uid} name={user.uid} />
+      <ul>
+        {messages.map((msg, index) => (
+          <li key={index}>{msg}</li>
         ))}
-        </div>
-        
-      </div>
+      </ul>
     </div>
   );
 }
