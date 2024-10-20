@@ -19,7 +19,7 @@ from langchain.embeddings.base import Embeddings
 from chromadb.utils.embedding_functions import OpenCLIPEmbeddingFunction
 from langchain.docstore.document import Document
 from langchain.memory import ConversationBufferMemory
-from langchain.memory import ChatMessageHistory
+from langchain_community.chat_message_histories import ChatMessageHistory#from langchain.memory import ChatMessageHistory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.prompts import PromptTemplate
 from langchain_mistralai import ChatMistralAI
@@ -160,7 +160,7 @@ from PIL import Image
 
 js_object = {
     "image": Image.open('img_aud\\image.png'),
-    "audio": 'img_aug\\audio.mp3',
+    "audio": 'img_aud\\audio.mp3',
     "text": "text"
 }
 
@@ -234,3 +234,4 @@ if __name__ == '__main__':
     # Wrap Flask app for eventlet
     app = DispatcherMiddleware(app)
     eventlet.wsgi.server(eventlet.listen(('', 5050)), app)
+    
