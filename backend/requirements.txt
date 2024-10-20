@@ -1,3 +1,14 @@
 flask
 python-socketio
 eventlet
+pillow
+pydub
+beautifulsoup4
+requests
+Pillow
+chromadb
+langchain
+langchain-chroma
+langchain-mistralai
+open-clip-torch
+langchain_community
