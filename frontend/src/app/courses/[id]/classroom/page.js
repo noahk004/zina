@@ -92,7 +92,8 @@ function Classroom() {
   useEffect(() => {
     let isCancelled = false; // Flag to check if component is unmounted
 
-    if (!images) {
+    if (images.length==0) {
+      console.log('id: ', id)
       sendMessage();
     }
 
@@ -127,14 +128,18 @@ function Classroom() {
     socket.emit("send_message", id);
     setMessage("");
   };
-  if (!loading) {
     return (
       <div className="w-screen flex justify-between h-full">
         <div className="p-5"></div>
 
-        <div className="h-full flex flex-col justify-center items-center">
+        {loading ? <div classsName="flex justify-center items-center w-screen h-screen">
+        <div className="flex justify-center gap-2 flex-col w-full h-full">
+          <p className="text-white translate-x-[-50%]">Loading your course...</p>
+          <PropagateLoader color="#EAEBED" size={10} />
+        </div>
+      </div> : <div className="h-full flex flex-col justify-center items-center">
           <div className="">
-            {images && images.length > 0 && (
+            {images && images.length > 0 && images[index] && (
               <motion.img
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -153,7 +158,7 @@ function Classroom() {
               {messages[index]}
             </motion.div>
           )}
-        </div>
+        </div>}
 
         <VoiceToText />
 
@@ -184,14 +189,4 @@ function Classroom() {
         </div>
       </div>
     );
-  } else {
-    return (
-      <div classsName="flex justify-center items-center w-screen h-screen">
-        <div>
-          <p className="text-white">Loading your course...</p>
-          <PropagateLoader color="#EAEBED" size={10} />
-        </div>
-      </div>
-    );
-  }
 }
