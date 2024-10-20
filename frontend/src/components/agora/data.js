@@ -1,3 +1,4 @@
 export const appId = "d417846ca18d43fba41b12655eb41dc4"
 export const channelName = "mychannel"
-export const token = "007eJxTYJDPt738z1L0fIFwjOb9Q2+WcX1dMG0/V/9P3rTrGlcO6rcrMKSYGJpbmJglJxpapJgYpyUlmhgmGRqZmZqmJpkYpiSbLCwSSW8IZGSQTpBmZmSAQBCfkyG3MjkjMS8vNYeBAQDzbCDD"
+export const token = "007eJxTYDDfvYpdZL6Jqsi6NZe3cJ6Jntcvu+HJqQdu763dlty/PdtOgSHFxNDcwsQsOdHQIsXEOC0p0cQwydDIzNQ0NcnEMCXZZMsvkfSGQEYGLjlDFkYGCATxORlyK5MzEvPyUnMYGAD5LCE0"
+export const certificate = "808cfbd831e342da883a29004bb2bd7a"
