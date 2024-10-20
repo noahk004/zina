@@ -72,19 +72,6 @@ function Classroom() {
   // const uid = generateUid()
   // const token = generateToken(uid)
 
-  // ------ AGORA -------
-  const [calling, setCalling] = useState(true);
-  useJoin(
-    { appid: appId, channel: channelName, token: token ? token : null },
-    calling
-  );
-  const remoteUsers = useRemoteUsers();
-  // ------ AGORA -------
-
-  // ------ COMPONENTS -------
-  const [camerasVisible, setCamerasVisible] = useState(true);
-  // ------ COMPONENTS -------
-
   useEffect(() => {
     // Listen for incoming messages from the server
     socket.on("message", (msg) => {
@@ -208,3 +195,4 @@ function Classroom() {
       </div>
     );
   }
+}
